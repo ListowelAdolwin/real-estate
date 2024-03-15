@@ -2,13 +2,27 @@ const express = require('express')
 require('dotenv').config()
 const connectDB = require('./config/db')
 
-const app = express()
+const userRoutes = require("./routes/userRoutes")
+const authRoutes = require("./routes/authRoutes")
 
-app.get("/", (req, res) => {
-    console.log("heyy")
-})
+const app = express()
+app.use(express.json())
+
+app.use("/api", userRoutes)
+app.use("/api/auth", authRoutes)
 
 app.listen(3000, () => {
     connectDB()
     console.log("Server successfully started!")
+})
+
+// Used to send error messages to the client side. 
+app.use((err, req, res, next) => {
+    const statusCode = err.status || 500
+    const message = err.message || "Unidentified error"
+    return res.status(statusCode).json({
+        success: "false",
+        message,
+        statusCode
+    })
 })
