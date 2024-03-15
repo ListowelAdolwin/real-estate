@@ -4,3 +4,5 @@ const handleErrors = (statusCode, message) => {
     err.message = message
     return err
 }
+
+module.exports = handleErrors
