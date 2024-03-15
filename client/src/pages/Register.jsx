@@ -1,14 +1,53 @@
-import React from 'react'
+import React, { useState } from "react";
+import { Oval } from "react-loader-spinner";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+  const [userData, setUserData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState([])
+
+  const navigate = useNavigate()
+  
+  const handleChange = (e) => {
+    setIsLoading(false);
+    setUserData({
+      ...userData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const data = await res.json();
+    console.log(data);
+    if (data.success === true){
+      navigate("/login")
+      setIsLoading(false)
+    }else{
+      setIsLoading(false)
+      setErrors(data.message)
+    }
+    
+  };
+
   return (
     <div>
-      <div class="min-h-screen flex items-center justify-center w-full dark:bg-gray-950">
-        <div class="bg-white dark:bg-gray-900 shadow-md rounded-lg px-8 py-6 max-w-md">
+      <div class="min-h-screen flex items-center justify-center w-full bg-gray-700">
+        <div class="bg-gray-500 shadow-md rounded-lg px-8 py-6 max-w-md">
           <h1 class="text-2xl font-bold text-center mb-4 dark:text-gray-200">
             Register
           </h1>
-          <form action="#">
+          <form className="" action="#">
             <div class="mb-4">
               <label
                 for="username"
@@ -19,9 +58,11 @@ function Register() {
               <input
                 type="text"
                 id="username"
-                class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                name="username"
+                class="shadow-sm bg-gray-300 rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Enter username"
                 required
+                onChange={handleChange}
               />
             </div>
             <div class="mb-4">
@@ -29,14 +70,16 @@ function Register() {
                 for="email"
                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Email Address
+                Email
               </label>
               <input
                 type="email"
                 id="email"
-                class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                name="email"
+                class="shadow-sm bg-gray-300 rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Enter email"
                 required
+                onChange={handleChange}
               />
             </div>
             <div class="mb-4">
@@ -49,23 +92,19 @@ function Register() {
               <input
                 type="password"
                 id="password"
-                class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                name="password"
+                class="shadow-sm bg-gray-300  rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Enter password"
                 required
+                onChange={handleChange}
               />
-              <a
-                href="#"
-                class="text-xs text-gray-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Forgot Password?
-              </a>
             </div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center">
                 <input
                   type="checkbox"
                   id="remember"
-                  class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 focus:outline-none"
+                  class="h-4 w-4 rounded border-gray-300 text-gray-700 focus:ring-gray-500 focus:outline-none"
                   checked
                 />
                 <label
@@ -77,20 +116,37 @@ function Register() {
               </div>
               <a
                 href="/login"
-                class="text-xs text-indigo-500 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                class="text-xs text-gray-800 hover:text-gray-900 hover:outline-3 hover:ring-2 hover:ring-offset-2 hover:ring-gray-500"
               >
                 Login
               </a>
             </div>
-            <button
-              onClick={() => {
-                alert("Hello");
-              }}
-              type="submit"
-              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Login
-            </button>
+            {isLoading ? (
+              <div
+                style={{
+                  margin: "auto",
+                }}
+              >
+                <Oval
+                  height="30"
+                  width="30"
+                  color="#383B53"
+                  ariaLabel="tail-spin-loading"
+                  radius="2"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                />
+              </div>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                type="submit"
+                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Register
+              </button>
+            )}
           </form>
         </div>
       </div>
@@ -98,4 +154,4 @@ function Register() {
   );
 }
 
-export default Register
+export default Register;
