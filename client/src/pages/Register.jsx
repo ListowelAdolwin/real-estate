@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import { Oval } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  registerStart,
+  registerSuccess,
+  registerFailure,
+} from "../redux/features/user/userSlice";
 
 function Register() {
   const [userData, setUserData] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState([])
 
-  const navigate = useNavigate()
-  
+  const { isLoading } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
-    setIsLoading(false);
+    dispatch(registerFailure());
     setUserData({
       ...userData,
       [e.target.id]: e.target.value,
@@ -19,7 +26,7 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    dispatch(registerStart());
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: {
@@ -27,17 +34,13 @@ function Register() {
       },
       body: JSON.stringify(userData),
     });
-
     const data = await res.json();
-    console.log(data);
-    if (data.success === true){
-      navigate("/login")
-      setIsLoading(false)
-    }else{
-      setIsLoading(false)
-      setErrors(data.message)
+    if (res.ok) {
+      dispatch(registerSuccess({ data }));
+      navigate("/login");
+    } else {
+      dispatch(registerFailure({ data }));
     }
-    
   };
 
   return (
