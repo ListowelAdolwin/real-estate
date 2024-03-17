@@ -1,11 +1,13 @@
 const express = require('express')
 
-const {getListowel, getAdolwin} = require("../controllers/userController")
+const {updateUser, getAdolwin} = require("../controllers/userController")
+const {verifyToken} = require('../utils/verifyToken')
 
-const router = express.Router()
+const userRouter = express.Router()
 
-router.get("/", getListowel)
-router.get("/ado", getAdolwin)
+console.log("User routes")
+userRouter.get("/ado", getAdolwin)
+userRouter.post("/update/:id", verifyToken, updateUser)
 
 
-module.exports = router
+module.exports = userRouter
