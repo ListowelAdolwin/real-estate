@@ -2,9 +2,12 @@ import React from "react";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom"; // Wherever this component is imported, it should wrapped by the BrowerRouter
+import { useSelector } from "react-redux";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { currentUser } = useSelector((state) => state.user);
+  console.log(currentUser)
 
   const handleNavlinkClick = () => {
     if (window.innerWidth <= 768) {
@@ -15,21 +18,18 @@ function Header() {
   return (
     <div>
       <header
-        className={`${isOpen ? "block p-4 bg-violet-300 text-2xl space-y-4" : "flex justify-between gap-3 items-center p-4 bg-violet-300"}`}
+        className={`${isOpen ? "block p-4 bg-gray-500 text-2xl space-y-4" : "flex justify-between gap-3 items-center p-4 bg-gray-500"}`}
       >
         <div className="">
           <Link to="/">
             <div className="flex flex-wrap">
-              <span className="">Real</span>
+              <span className="text-white">Real</span>
               <span className="text-sky-500">Estate</span>
             </div>
           </Link>
         </div>
         <div className={`${isOpen ? "hidden" : "block"}`}>
-          <form
-            action=""
-            className="flex p-2 rounded bg-slate-200 items-center"
-          >
+          <form action="" className="flex p-2 rounded bg-gray-300 items-center">
             <input
               className="bg-transparent focus:outline-none w-40 sm:w-64"
               type="text"
@@ -42,20 +42,32 @@ function Header() {
         </div>
         <div>
           <ul
-            className={`flex flex-grow flex-col ${isOpen ? "block" : "hidden"} space-y-4 sm:flex sm:flex-row sm:space-x-4 sm:space-y-0`}
+            className={`flex flex-grow flex-col text-white ${isOpen ? "block" : "hidden"} space-y-4 sm:flex sm:flex-row sm:space-x-4 sm:space-y-0`}
           >
             <Link onClick={handleNavlinkClick} className="active" to="/">
               <li>Home</li>
             </Link>
-            <Link onClick={handleNavlinkClick} to="/login">
-              <li>Login</li>
-            </Link>
-            <Link onClick={handleNavlinkClick} to="/register">
-              <li>Register</li>
-            </Link>
             <Link onClick={handleNavlinkClick} to="/about">
               <li>About</li>
             </Link>
+            {currentUser ? (
+              <Link to="/profile">
+                <img
+                  className="h-8 l-8 rounded-full object-cover"
+                  src={currentUser.data.avatar}
+                  alt="avatar"
+                />
+              </Link>
+            ) : (
+              <div>
+                <Link onClick={handleNavlinkClick} to="/login">
+                  <li>Login</li>
+                </Link>
+                <Link onClick={handleNavlinkClick} to="/register">
+                  <li>Register</li>
+                </Link>
+              </div>
+            )}
           </ul>
         </div>
 
