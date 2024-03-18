@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 exports.updateUser = async (req, res, next) => {
     const user = req.user
     const userId = req.params.id
-    if (user.id != userId) {
+    if (user.id !== userId) {
         return next(handleErrors(401, "You can only update your profile"))
     }
     if (req.body.password){
@@ -28,6 +28,17 @@ exports.updateUser = async (req, res, next) => {
     }
 }
 
-exports.getAdolwin = (req, res) => {
-    res.json({"msg": "Hello, Adolwin"})
+exports.deleteUser =  async(req, res, next) => {
+    const user = req.user
+    const userId = req.params.id
+    if (user.id !== userId) {
+        return next(handleErrors(401, "You can only delete your account"))
+    }
+    try {
+        await User.findByIdAndDelete(userId)
+        res.clearCookie("accessToken")
+        res.status(200).json({msg: "Account successfully deleted"})
+    } catch (error) {
+        next()
+    }
 }
