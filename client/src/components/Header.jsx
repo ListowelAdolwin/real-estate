@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
-  console.log(currentUser)
 
   const handleNavlinkClick = () => {
     if (window.innerWidth <= 768) {
@@ -18,9 +17,9 @@ function Header() {
   return (
     <div>
       <header
-        className={`${isOpen ? "block p-4 bg-gray-500 text-2xl space-y-4" : "flex justify-between gap-3 items-center p-4 bg-gray-500"}`}
+        className={`${isOpen ? "block p-4 bg-gray-500 text-2xl space-y-4" : "flex justify-around gap-3 items-center p-4 bg-gray-500"}`}
       >
-        <div className="">
+        <div className="text-xl">
           <Link to="/">
             <div className="flex flex-wrap">
               <span className="text-white">Real</span>
@@ -42,7 +41,7 @@ function Header() {
         </div>
         <div>
           <ul
-            className={`flex flex-grow flex-col text-white ${isOpen ? "block" : "hidden"} space-y-4 sm:flex sm:flex-row sm:space-x-4 sm:space-y-0`}
+            className={`flex flex-grow flex-col items-center text-white ${isOpen ? "block" : "hidden"} space-y-4 sm:flex sm:flex-row sm:space-x-4 sm:space-y-0`}
           >
             <Link onClick={handleNavlinkClick} className="active" to="/">
               <li>Home</li>
@@ -53,13 +52,13 @@ function Header() {
             {currentUser ? (
               <Link to="/profile">
                 <img
-                  className="h-8 l-8 rounded-full object-cover"
+                  className="h-8 l-8 md:ml-12 rounded-full object-cover"
                   src={currentUser.data.avatar}
                   alt="avatar"
                 />
               </Link>
             ) : (
-              <div>
+              <div className="flex space-x-4">
                 <Link onClick={handleNavlinkClick} to="/login">
                   <li>Login</li>
                 </Link>
