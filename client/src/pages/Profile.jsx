@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   getDownloadURL,
   getStorage,
@@ -8,8 +9,17 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase.js";
+import { useDispatch } from "react-redux";
+import {
+  updateUser,
+  logoutUser,
+  deleteUser,
+} from "../redux/features/user/userSlice.jsx";
 
 function Profile() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { currentUser } = useSelector((state) => state.user);
   const [avatar, setAvatar] = useState(undefined);
   const [userData, setUserData] = useState({
@@ -18,6 +28,7 @@ function Profile() {
   });
   const [avatarUploadError, setAvatarUploadError] = useState(false);
   const [avatarUploadPercent, setAvatarUploadPercent] = useState(0);
+  const [showModal, setShowModal] = React.useState(false);
 
   useEffect(() => {
     if (avatar) {
@@ -50,26 +61,52 @@ function Profile() {
     );
   };
 
+  const handleChange = (e) => {
+    e.preventDefault();
+    setUserData({
+      ...userData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/users/update", {
+    const res = await fetch(`/api/user/update/${currentUser.data._id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(userData),
     });
-    if (res.ok){
-        
+    const data = await res.json();
+    if (res.ok) {
+      dispatch(updateUser({ data }));
+    } else {
+      console.log("Error occured in updating profile");
     }
   };
 
-  const handleChange = (e) => {
-    e.preventDefault()
-    setUserData({
-      ...userData,
-      [e.target.id]: e.target.value,
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    setShowModal(false)
+    const res = await fetch(`/api/user/delete/${currentUser.data._id}`, {
+      method: "DELETE",
     });
+    const data = await res.json();
+    console.log(data);
+    if (res.ok) {
+      navigate("/")
+      dispatch(deleteUser());
+      console.log(data);
+    } else {
+      console.log("Error while deleting user");
+    }
+  };
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    dispatch(logoutUser());
+    navigate("/");
   };
 
   return (
@@ -165,12 +202,63 @@ function Profile() {
           </button>
         </form>
         <div className="flex justify-between mb-3 text-sm">
-          <button className="mb-5 rounded-full bg-gray-700 hover:shadow-lg font-semibold text-white px-4 py-1">
+          <button
+            onClick={handleLogout}
+            className="mb-5 rounded-full bg-gray-700 hover:shadow-lg font-semibold text-white px-4 py-1"
+          >
             Logout
           </button>
-          <button className="mb-5 font-semibold text-red-500 px-6 py-2">
+          <button
+            onClick={() => setShowModal(true)}
+            className="mb-5 font-semibold text-red-500 px-6 py-2"
+          >
             Delete Account
           </button>
+          {showModal ? (
+            <>
+              <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                <div className="relative w-auto my-6 mx-auto max-w-3xl">
+                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                    <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+                      <h3 className="text-3xl font-semibold">Confirm Account Deletion</h3>
+                      <button
+                        className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                        onClick={() => setShowModal(false)}
+                      >
+                        <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                          ×
+                        </span>
+                      </button>
+                    </div>
+                    {/*body*/}
+                    <div className="relative p-6 flex-auto">
+                      <p className="my-4 text-blueGray-500 text-lg leading-relaxed">
+                        Are you sure you want to delete account?
+                      </p>
+                    </div>
+                    {/*footer*/}
+                    <div className="flex items-center justify-between p-6 border-t border-solid border-blueGray-200 rounded-b">
+                      <button
+                        className="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
+                        type="button"
+                        onClick={() => setShowModal(false)}
+                      >
+                        Close
+                      </button>
+                      <button
+                        className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2"
+                        type="button"
+                        onClick={handleDelete}
+                      >
+                        Yes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+            </>
+          ) : null}
         </div>
       </div>
       <div className="md:flex-grow md:w-7/12 md:h-screen md:overflow-y-auto">
