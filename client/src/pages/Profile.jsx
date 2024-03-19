@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   getDownloadURL,
   getStorage,
@@ -39,7 +39,7 @@ function Profile() {
   const avatarRef = useRef(null);
   const handleFileUpload = (avatar) => {
     const storage = getStorage(app);
-    const fileName = avatar.name + new Date().getTime();
+    const fileName = new Date().getTime() + "__" + avatar.name ;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, avatar);
 
@@ -111,14 +111,7 @@ function Profile() {
 
   return (
     <div className="md:flex  md:gap-5 px-5 py-2">
-      <div className="md:w-4/12 md:h-screen md:overflow-y-auto bg-white shadow-xl rounded-lg text-gray-900">
-        <div className="rounded-t-lg h-32 overflow-hidden">
-          <img
-            className="object-cover object-top w-full"
-            src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
-            alt="Mountain"
-          />
-        </div>
+      <div className="md:w-4/12 md:h-screen md:overflow-y-autho bg-white shadow-xl rounded-lg text-gray-900">
         <div className="hidden">
           <input
             onChange={(e) => {
@@ -131,7 +124,7 @@ function Profile() {
             ref={avatarRef}
           />
         </div>
-        <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
+        <div className="mx-auto w-32 h-32 relative border-4 border-white rounded-full overflow-hidden">
           <img
             className="object-cover object-center h-32 cursor-pointer"
             src={userData.avatar || currentUser.data.avatar}
@@ -193,6 +186,7 @@ function Profile() {
               />
             </div>
           </div>
+
           <button
             onClick={handleUpdate}
             type="submit"
@@ -200,6 +194,13 @@ function Profile() {
           >
             Update
           </button>
+          <Link
+            type="submit"
+            className="mx-auto w-full text-center mb-5 rounded-full bg-green-600 hover:shadow-lg font-semibold text-white px-6 py-2"
+            to="/create-listing"
+          >
+            Create Listing
+          </Link>
         </form>
         <div className="flex justify-between mb-3 text-sm">
           <button
@@ -220,7 +221,9 @@ function Profile() {
                 <div className="relative w-auto my-6 mx-auto max-w-3xl">
                   <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                     <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                      <h3 className="text-3xl font-semibold">Confirm Account Deletion</h3>
+                      <h3 className="text-3xl font-semibold">
+                        Confirm Account Deletion
+                      </h3>
                       <button
                         className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                         onClick={() => setShowModal(false)}
@@ -261,7 +264,7 @@ function Profile() {
           ) : null}
         </div>
       </div>
-      <div className="md:flex-grow md:w-7/12 md:h-screen md:overflow-y-auto">
+      <div className="md:flex-grow md:w-6/12 md:h-screen md:overflow-y-auto">
         <h1 className="text-2xl">House Listings</h1>
         Listings Lorem ipsum dolor sit amet, consectetur adipisicing elit.
         Molestiae doloribus nihil et suscipit repudiandae vero quas, labore
