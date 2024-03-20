@@ -1,9 +1,11 @@
 const express = require('express')
-const {createListing} = require('../controllers/listingControllers')
+const {createListing, getUserListing} = require('../controllers/listingControllers')
+const {verifyToken} = require("../utils/verifyToken")
 
 const listingRouter = express.Router()
-
-listingRouter.post("/create", createListing)
+console.log("In listing routes")
+listingRouter.post("/create", verifyToken, createListing)
+listingRouter.get("/:id", verifyToken, getUserListing)
 
 
 module.exports = listingRouter
