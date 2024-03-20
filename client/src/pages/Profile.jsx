@@ -15,6 +15,7 @@ import {
   logoutUser,
   deleteUser,
 } from "../redux/features/user/userSlice.jsx";
+import Listing from "../components/Listing.jsx";
 
 function Profile() {
   const dispatch = useDispatch();
@@ -29,6 +30,11 @@ function Profile() {
   const [avatarUploadError, setAvatarUploadError] = useState(false);
   const [avatarUploadPercent, setAvatarUploadPercent] = useState(0);
   const [showModal, setShowModal] = React.useState(false);
+  const [userListings, setUserListings] = useState([]);
+
+  useEffect(() => {
+    getUserListings();
+  }, []);
 
   useEffect(() => {
     if (avatar) {
@@ -39,7 +45,7 @@ function Profile() {
   const avatarRef = useRef(null);
   const handleFileUpload = (avatar) => {
     const storage = getStorage(app);
-    const fileName = new Date().getTime() + "__" + avatar.name ;
+    const fileName = new Date().getTime() + "__" + avatar.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, avatar);
 
@@ -83,19 +89,20 @@ function Profile() {
       dispatch(updateUser({ data }));
     } else {
       console.log("Error occured in updating profile");
+      console.log("Data: ", data);
     }
   };
 
   const handleDelete = async (e) => {
     e.preventDefault();
-    setShowModal(false)
+    setShowModal(false);
     const res = await fetch(`/api/user/delete/${currentUser.data._id}`, {
       method: "DELETE",
     });
     const data = await res.json();
     console.log(data);
     if (res.ok) {
-      navigate("/")
+      navigate("/");
       dispatch(deleteUser());
       console.log(data);
     } else {
@@ -105,13 +112,31 @@ function Profile() {
 
   const handleLogout = async (e) => {
     e.preventDefault();
-    dispatch(logoutUser());
-    navigate("/");
+    try {
+      await fetch("/api/auth/logout");
+      dispatch(logoutUser());
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getUserListings = async () => {
+    try {
+      const res = await fetch(`/api/listings/${currentUser.data._id}`);
+      if (!res.ok) {
+        throw new Error("Failed to fetch user listings");
+      }
+      const data = await res.json();
+      setUserListings(data);
+    } catch (error) {
+      console.error("Error fetching user listings:", error);
+    }
   };
 
   return (
-    <div className="md:flex  md:gap-5 px-5 py-2">
-      <div className="md:w-4/12 md:h-screen md:overflow-y-autho bg-white shadow-xl rounded-lg text-gray-900">
+    <div className="md:flex  md:gap-5 px-5 py-2 bg-gray-100">
+      <div className="bg-gray-100 md:w-3/12 md:h-screen md:overflow-y-autho shadow-xl rounded-lg text-gray-900">
         <div className="hidden">
           <input
             onChange={(e) => {
@@ -265,85 +290,32 @@ function Profile() {
         </div>
       </div>
       <div className="md:flex-grow md:w-6/12 md:h-screen md:overflow-y-auto">
-        <h1 className="text-2xl">House Listings</h1>
-        Listings Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        Molestiae doloribus nihil et suscipit repudiandae vero quas, labore
-        sequi in, fugiat facere hic? Temporibus impedit minus aut numquam
-        excepturi reprehenderit, assumenda accusantium esse dicta, ipsam animi
-        sed voluptate aspernatur illum repellat, quasi tenetur nostrum suscipit
-        ex! Impedit, aliquam! Eligendi temporibus odit consequuntur quaerat
-        architecto mollitia velit eum. Officia eaque eligendi animi nihil quo ea
-        repudiandae hic ipsa, dolore quasi. Laborum sequi consectetur enim
-        doloremque, voluptatum praesentium nulla. Accusantium iure adipisci
-        impedit vel officiis dolores quaerat qui accusamus! Minus, quisquam
-        perspiciatis soluta voluptate, esse iusto impedit ipsam sapiente, et
-        inventore autem adipisci?
-        <p>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Porro nobis
-          debitis fugit iusto repudiandae, veritatis sapiente modi. Expedita
-          pariatur perferendis aut quod. Eos quos, dolore sed minima,
-          necessitatibus, quibusdam recusandae dicta voluptas accusamus
-          excepturi beatae aspernatur. Tempora, magni voluptatum provident
-          exercitationem eius ad nulla nam modi repellat. Cumque eligendi vitae
-          maxime nulla! Culpa assumenda, magni aliquid dolores voluptatem rerum
-          eius nulla a ratione recusandae nisi ea voluptas! Molestias eveniet
-          sapiente, voluptates, cumque corporis ea quam alias nam soluta harum
-          amet illum doloribus? Eum iste blanditiis eos, impedit ad
-          consequuntur. Accusantium maiores et vitae. Quos iure possimus enim in
-          neque optio?
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Asperiores
-          iusto distinctio cumque praesentium beatae assumenda quibusdam,
-          quaerat sint eligendi soluta aut, dolore minus, culpa dicta! Aut
-          maiores quos repellat sunt placeat perspiciatis velit qui totam at
-          deserunt! Praesentium atque ad quam quia odit. Iusto accusamus,
-          aperiam sapiente in dolore labore reprehenderit, sit rerum, adipisci
-          aspernatur quia officiis. Consectetur at qui ducimus obcaecati quasi,
-          fuga suscipit architecto mollitia itaque eaque, labore recusandae
-          beatae quidem magnam porro aperiam nobis! Nostrum inventore quaerat
-          illum maiores aliquid vero, ratione minus quasi a iure! Numquam in
-          labore, quod doloremque eligendi expedita temporibus blanditiis
-          molestias eos.
-        </p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dicta modi
-          vitae rerum, nostrum at obcaecati, explicabo id minima quam totam
-          numquam ducimus placeat illum ratione animi sed eaque tenetur
-          cupiditate officia blanditiis pariatur laborum corporis? Unde facere
-          officiis officia et nam ab vero provident ipsa itaque consequuntur id
-          magnam libero impedit cum sit soluta possimus assumenda molestias,
-          consequatur, laudantium facilis? Accusantium corrupti voluptas quod
-          voluptatum, quasi, impedit magnam dicta debitis iusto harum officia
-          non necessitatibus voluptates maxime fugiat? Aliquid officiis quod
-          exercitationem, iure optio eum earum blanditiis commodi quo placeat
-          praesentium iste assumenda dolore, vero, distinctio tempora ea
-          quibusdam rerum!
-        </p>
-        <p>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur
-          accusantium doloremque hic aperiam nulla esse inventore! Numquam, eum
-          quaerat quis at cum neque unde molestiae dolor. Aliquam, similique
-          nemo autem aut ipsam maxime non laboriosam consequuntur rem atque
-          assumenda accusantium vel fugiat ratione voluptatum, ducimus cumque
-          velit magni blanditiis debitis mollitia odio! Maiores fugiat modi a
-          ducimus illum mollitia, repellendus optio ab iure delectus enim,
-          laboriosam ea numquam atque animi doloribus nesciunt voluptatem quasi.
-          Accusantium sapiente cum sit iusto harum neque rerum, labore eos ea
-          quasi porro recusandae eveniet inventore, molestias ratione quos
-          distinctio in hic doloribus soluta explicabo placeat debitis at?
-          Explicabo corporis natus assumenda esse odio, doloribus quo dicta
-          reiciendis dolorem, sed eligendi accusantium quisquam unde tempore
-          facilis temporibus. Sed error recusandae consequatur excepturi sequi
-          libero quasi nihil nemo dignissimos veritatis. Tempora, laboriosam
-          unde culpa quos ex voluptate sunt doloremque, totam possimus
-          voluptates asperiores earum iure similique expedita dolorem maxime
-          esse placeat ipsum ullam sequi, rem qui! Nostrum enim pariatur
-          corrupti distinctio earum doloribus, odio id delectus dolorem beatae
-          ad placeat. A assumenda aliquam fugit aliquid magni nemo quos ullam
-          doloribus. Animi perferendis perspiciatis magni veniam ab porro neque,
-          at veritatis. Non a enim nisi possimus reprehenderit nulla?
-        </p>
+        <h1 className="text-2xl text-center">House Listings</h1>
+        <div class="relative flex min-h-screen flex-col justify-center overflow-hidden sm:py-4">
+          <div class="mx-auto max-w-screen-xl px-4 w-full">
+            <h2 class="text-center mb-4 font-bold text-xl text-gray-600">
+              These are listings created by {currentUser.data.username}
+            </h2>
+            <div class="grid w-full sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              {userListings.map((listing, index) => (
+                <Listing
+                  key={index}
+                  id={listing._id}
+                  title={listing.name}
+                  description={listing.description}
+                  baths={listing.bathrooms}
+                  beds={listing.bedrooms}
+                  price={listing.regularPrice}
+                  type={listing.type}
+                  parking={listing.parking}
+                  furnished={listing.furnished}
+                  offer={listing.offer}
+                  imageUrls={listing.imageUrls}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
