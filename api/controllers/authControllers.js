@@ -33,12 +33,23 @@ exports.Login = async (req, res, next) => {
     }
     const token = jwt.sign({id: validUser._id}, process.env.JWT_SECRET_KEY, {expiresIn: '1d'})
     const {password:pass, ...rest} = validUser._doc
-    res.cookie('accessToken', token, {httpOnly: true}).status(200).json(rest)
+    const expirationDate = new Date();
+    expirationDate.setDate(new Date().getDate() + 1);
+    res.cookie('accessToken', token, {httpOnly: true, expires: expirationDate}).status(200).json(rest)
     } catch (error) {
         next(error)
     }
-    
 }
+
+exports.logOut = (req, res, next) => {
+    try {
+        res.clearCookie("accessToken").json({ msg: "User successfully logged out!" });
+    } catch (error) {
+        console.error("Error clearing cookie:", error);
+        res.status(500).json({ error: "Failed to log out user" });
+    }
+};
+
 
 exports.googleAuth = async (req, res, next) => {
     const {name, email, avatar} = req.body
