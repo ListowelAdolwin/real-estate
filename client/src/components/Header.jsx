@@ -43,6 +43,18 @@ function Header() {
           <ul
             className={`flex flex-grow flex-col items-center text-white ${isOpen ? "block" : "hidden"} space-y-4 sm:flex sm:flex-row sm:space-x-4 sm:space-y-0`}
           >
+            <Link
+              className="md:mr-12 hidden md:inline bg-green-600 p-2 rounded-md"
+              to="/create-listing"
+            >
+              Create Listing
+            </Link>
+            <Link
+              className="md:mr-12 md:hidden  bg-green-600 p-2 rounded-md"
+              to="/create-listing"
+            >
+              Create
+            </Link>
             <Link onClick={handleNavlinkClick} className="active" to="/">
               <li>Home</li>
             </Link>
