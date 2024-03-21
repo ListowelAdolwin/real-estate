@@ -211,10 +211,10 @@ function CreateListing() {
             type="text"
             placeholder="Address"
             id="address"
-            name="adress"
+            name="address"
             required
             onChange={handleFormChange}
-            value={formData.adress}
+            value={formData.address}
           />
           <div className="flex gap-4 p-3 items-center flex-wrap">
             <div className="flex gap-3 flex-wrap">

@@ -123,7 +123,7 @@ function Profile() {
 
   const getUserListings = async () => {
     try {
-      const res = await fetch(`/api/listings/${currentUser.data._id}`);
+      const res = await fetch(`/api/listings/user/${currentUser.data._id}`);
       if (!res.ok) {
         throw new Error("Failed to fetch user listings");
       }
@@ -290,12 +290,11 @@ function Profile() {
         </div>
       </div>
       <div className="md:flex-grow md:w-6/12 md:h-screen md:overflow-y-auto">
-        <h1 className="text-2xl text-center">House Listings</h1>
-        <div class="relative flex min-h-screen flex-col justify-center overflow-hidden sm:py-4">
+        <h2 class="text-2xl text-center mb-4 font-bold text-gray-600">
+         Listings created by {currentUser.data.username}
+        </h2>
+        <div class="relative flex mn-h-screen flex-col justify-center overflow-hidden sm:py-4">
           <div class="mx-auto max-w-screen-xl px-4 w-full">
-            <h2 class="text-center mb-4 font-bold text-xl text-gray-600">
-              These are listings created by {currentUser.data.username}
-            </h2>
             <div class="grid w-full sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {userListings.map((listing, index) => (
                 <Listing
