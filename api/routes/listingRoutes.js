@@ -1,11 +1,20 @@
 const express = require('express')
-const {createListing, getUserListing} = require('../controllers/listingControllers')
+const {
+    createListing,
+    getUserListing,
+    getListing,
+    deleteListing,
+    updateListing
+} = require('../controllers/listingControllers')
 const {verifyToken} = require("../utils/verifyToken")
 
 const listingRouter = express.Router()
-console.log("In listing routes")
+
 listingRouter.post("/create", verifyToken, createListing)
-listingRouter.get("/:id", verifyToken, getUserListing)
+listingRouter.delete("/delete/:id", verifyToken, deleteListing)
+listingRouter.post("/update/:id", verifyToken, updateListing)
+listingRouter.get("/user/:id", verifyToken, getUserListing)
+listingRouter.get("/:id", getListing)
 
 
 module.exports = listingRouter
