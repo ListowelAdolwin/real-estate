@@ -12,7 +12,6 @@ exports.createListing = async (req, res, next) => {
 
 exports.getUserListing = async (req, res, next) => {
     const userId = req.params.id
-    console.log("The user: ", req.user)
     if (userId !== req.user.id){
         return next(handleErrors(401, "Forbidden!"))
     }
@@ -23,4 +22,54 @@ exports.getUserListing = async (req, res, next) => {
         next(error)
     }
 
+}
+
+exports.getListing = async (req, res, next) => {
+    const listingId = req.params.id
+    try{
+        const listing = await Listing.findById(listingId)
+        
+        if (!listing){
+            return res.json({msg: "No Listing found!"})
+        }
+        res.status(200).json(listing)
+    }catch(err) {
+        next(err)
+    }
+}
+
+exports.deleteListing = async (req, res, next) => {
+    const listingId = req.params.id
+    try{
+        const listing = await Listing.findByIdAndDelete(listingId)
+        if (!listing){
+            return res.json({msg: "No Listing found!"})
+        }
+        if (listing.author.toString() !== req.user.id){
+            return res.status(401).json({msg: "You can only delete your listings"})
+        }
+        res.status(200).json(listing)
+    }catch(err) {
+        next(err)
+    }
+}
+
+exports.updateListing = async (req, res, next) => {
+    const listingId = req.params.id
+    const listing = await Listing.findById(listingId)
+
+    if (!listing){
+        return res.status(404).json({msg: "No Listing found!"})
+    }
+    if (listing.author.toString() !== req.user.id){
+        return res.status(401).json({msg: "You can only update your listings"})
+    }
+    try {
+        const updatedListing = await Listing.findByIdAndUpdate(listingId, {
+            $set: req.body
+        }, {new: true})
+        res.status(200).json(updatedListing)
+    } catch (error) {
+        next(error)
+    }
 }
