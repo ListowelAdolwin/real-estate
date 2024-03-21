@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Contact({ listing }) {
   const [landlord, setLandlord] = useState(null);
   const [message, setMessage] = useState("");
 
+  const { currentUser } = useSelector((state) => state.user);
   const onChange = (e) => {
     setMessage(e.target.value);
   };
@@ -29,15 +32,25 @@ export default function Contact({ listing }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        sender: currentUser.email,
-        receiver: listing.author.email,
+        sender: currentUser.data.email,
+        receiver: landlord.email,
         subject: `Interested in talking about your Listing, ${listing.name}`,
         message,
       }),
-    })
-  }
+    });
+    const data = await res.json();
+    if (res.ok){
+    setMessage("");
+    toast("Email successfully sent!");
+    } else {
+      toast("Error while sending email, please retry")
+    }
+    console.log(data);
+  };
+
   return (
     <>
+      <ToastContainer />
       {landlord && (
         <div className="flex flex-col gap-2">
           <p>
@@ -53,18 +66,22 @@ export default function Contact({ listing }) {
             onChange={onChange}
             placeholder="Enter your message here..."
             className="w-full border p-3 rounded-lg"
+            required
           ></textarea>
 
-          <Link
+          {/* <Link
             to={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`}
             className="bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95"
           >
             Send Message
-          </Link>
+          </Link> */}
           <button
+            type="submit"
             onClick={sendMessage}
             className="bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95"
-          >Send Message</button>
+          >
+            Send Message
+          </button>
         </div>
       )}
     </>

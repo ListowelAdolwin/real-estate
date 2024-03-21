@@ -1,6 +1,7 @@
 const handleErrors = require("../utils/errors")
 const User = require("../models/User")
 const bcrypt = require('bcrypt')
+const sendCustomEmail = require('../utils/sendEmail')
 
 
 exports.updateUser = async (req, res, next) => {
@@ -56,6 +57,14 @@ exports.getUser = async (req, res, next) => {
     }
 }
 
-// const sendEmail = (req, res, next) {
-
-// }
+ exports.sendEmail = (req, res, next) => {
+    const {sender, receiver, subject, message} = req.body
+    console.log(req.body)
+    try {
+        const html = `${message}`
+        sendCustomEmail(sender, receiver, subject, html)
+        res.status(200).json({msg: "Message sent"})
+    } catch (error) {
+        next(error)
+    }
+}
