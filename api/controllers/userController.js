@@ -42,3 +42,20 @@ exports.deleteUser =  async(req, res, next) => {
         next()
     }
 }
+
+exports.getUser = async (req, res, next) => {
+    const userId = req.params.id
+    try{
+        const user = await User.findById(userId)
+        if (!user){
+            res.status(404).json({msg: "User not found!"})
+        }
+        res.status(200).json(user)
+    }catch(err) {
+        next(err)
+    }
+}
+
+// const sendEmail = (req, res, next) {
+
+// }
