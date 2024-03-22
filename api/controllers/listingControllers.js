@@ -73,3 +73,51 @@ exports.updateListing = async (req, res, next) => {
         next(error)
     }
 }
+
+exports.getListings = async (req, res, next) => {
+    const searchTerm = req.query.searchTerm || '';
+    const sortPattern = req.query.sort || 'createdAt'
+    const sortOrder = req.query.sortOrder || 'desc'
+    const limit = req.query.limit || 9
+    const startIndex = req.query.limit || 0
+
+    let offerQuery = req.query.offer
+    if (!offerQuery) {
+        offerQuery = {$in: [true, false]}
+    } 
+
+    let furnishedQuery = req.query.furnished
+    if (!furnishedQuery){
+        furnishedQuery = {$in: [true, false]}
+    } 
+    
+    let parkingQuery = req.query.parking
+    if (!parkingQuery){
+        parkingQuery = {$in: [true, false]}
+    }
+
+    let typeQuery = req.query.type
+    if (!typeQuery || typeQuery === 'all'){
+        typeQuery = {$in: ['rent', 'sale']}
+    }
+    console.log(searchTerm)
+
+    try {
+        const listings = await Listing.find({
+            name: {
+                $regex: searchTerm,
+                $options: 'i'
+        },
+        offer: offerQuery,
+        parking: parkingQuery,
+        furnished: furnishedQuery,
+        type: typeQuery,
+        bathrooms: 1,
+        type: typeQuery,
+    }).sort({[sortPattern]: sortOrder}).skip(startIndex).limit(limit)
+    res.status(200).json(listings)
+
+    } catch (error) {
+        next(error)
+    }
+}
