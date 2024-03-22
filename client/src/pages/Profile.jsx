@@ -294,27 +294,14 @@ function Profile() {
         </div>
       </div>
       <div className="md:flex-grow md:w-6/12 md:h-screen md:overflow-y-auto">
-        <h2 class="text-2xl text-center mb-4 font-bold text-gray-600">
-         Listings created by {currentUser.data.username}
+        <h2 className="text-2xl text-center mb-4 font-bold text-gray-600">
+          Listings created by {currentUser.data.username}
         </h2>
-        <div class="relative flex mn-h-screen flex-col justify-center overflow-hidden sm:py-4">
-          <div class="mx-auto max-w-screen-xl px-4 w-full">
-            <div class="grid w-full sm:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="relative flex mn-h-screen flex-col justify-center overflow-hidden sm:py-4">
+          <div className="mx-auto max-w-screen-xl px-4 w-full">
+            <div className="grid w-full sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {userListings.map((listing, index) => (
-                <Listing
-                  key={index}
-                  id={listing._id}
-                  title={listing.name}
-                  description={listing.description}
-                  baths={listing.bathrooms}
-                  beds={listing.bedrooms}
-                  price={listing.regularPrice}
-                  type={listing.type}
-                  parking={listing.parking}
-                  furnished={listing.furnished}
-                  offer={listing.offer}
-                  imageUrls={listing.imageUrls}
-                />
+                <Listing key={index} listing={listing} />
               ))}
             </div>
           </div>
