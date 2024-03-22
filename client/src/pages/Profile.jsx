@@ -15,6 +15,8 @@ import {
   logoutUser,
   deleteUser,
 } from "../redux/features/user/userSlice.jsx";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Listing from "../components/Listing.jsx";
 
 function Profile() {
@@ -87,6 +89,7 @@ function Profile() {
     const data = await res.json();
     if (res.ok) {
       dispatch(updateUser({ data }));
+      toast("Profile successfully updated!")
     } else {
       console.log("Error occured in updating profile");
       console.log("Data: ", data);
@@ -136,6 +139,7 @@ function Profile() {
 
   return (
     <div className="md:flex  md:gap-5 px-5 py-2 bg-gray-100">
+      <ToastContainer />
       <div className="bg-gray-100 md:w-3/12 md:h-screen md:overflow-y-autho shadow-xl rounded-lg text-gray-900">
         <div className="hidden">
           <input
