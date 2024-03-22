@@ -1,18 +1,36 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import { Link } from "react-router-dom"; // Wherever this component is imported, it should wrapped by the BrowerRouter
+import { Link, useNavigate } from "react-router-dom"; // Wherever this component is imported, it should wrapped by the BrowerRouter
 import { useSelector } from "react-redux";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('')
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const newSearchTerm = urlParams.get("searchTerm");
+    if (newSearchTerm) {
+      setSearchTerm(newSearchTerm);
+    }
+  }, [window.location.search])
 
   const handleNavlinkClick = () => {
     if (window.innerWidth <= 768) {
       setIsOpen(false);
     }
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const urlParams = new URLSearchParams(window.location.search)
+    urlParams.set('searchTerm', searchTerm)
+    const searchQuery = urlParams.toString()
+    navigate(`/search?${searchQuery}`)
+  }
 
   return (
     <div>
@@ -28,15 +46,24 @@ function Header() {
           </Link>
         </div>
         <div className={`${isOpen ? "hidden" : "block"}`}>
-          <form action="" className="flex p-2 rounded bg-gray-300 items-center">
+          <form
+            onSubmit={handleSubmit}
+            className="flex p-2 rounded bg-gray-300 items-center"
+          >
             <input
               className="bg-transparent focus:outline-none w-40 sm:w-64"
               type="text"
               name="q"
               id=""
               placeholder="Search real estates"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+              }}
             />
-            <FaSearch className="text-slate-500"></FaSearch>
+            <button>
+              <FaSearch className="text-slate-500"></FaSearch>
+            </button>
           </form>
         </div>
         <div>
