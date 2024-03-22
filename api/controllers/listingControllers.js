@@ -77,22 +77,22 @@ exports.updateListing = async (req, res, next) => {
 exports.getListings = async (req, res, next) => {
     const searchTerm = req.query.searchTerm || '';
     const sortPattern = req.query.sort || 'createdAt'
-    const sortOrder = req.query.sortOrder || 'desc'
+    const sortOrder = req.query.order || 'desc'
     const limit = req.query.limit || 9
-    const startIndex = req.query.limit || 0
+    const startIndex = req.query.startIndex || 0
 
     let offerQuery = req.query.offer
-    if (!offerQuery) {
+    if (offerQuery == 'false' || offerQuery == undefined) {
         offerQuery = {$in: [true, false]}
     } 
 
     let furnishedQuery = req.query.furnished
-    if (!furnishedQuery){
+    if (furnishedQuery == 'false' || furnishedQuery == undefined){
         furnishedQuery = {$in: [true, false]}
     } 
     
     let parkingQuery = req.query.parking
-    if (!parkingQuery){
+    if (parkingQuery == 'false' || parkingQuery == undefined){
         parkingQuery = {$in: [true, false]}
     }
 
@@ -100,7 +100,6 @@ exports.getListings = async (req, res, next) => {
     if (!typeQuery || typeQuery === 'all'){
         typeQuery = {$in: ['rent', 'sale']}
     }
-    console.log(searchTerm)
 
     try {
         const listings = await Listing.find({
@@ -112,9 +111,7 @@ exports.getListings = async (req, res, next) => {
         parking: parkingQuery,
         furnished: furnishedQuery,
         type: typeQuery,
-        bathrooms: 1,
-        type: typeQuery,
-    }).sort({[sortPattern]: sortOrder}).skip(startIndex).limit(limit)
+    }).sort({[sortPattern]: sortOrder}).limit(limit).skip(startIndex)
     res.status(200).json(listings)
 
     } catch (error) {
