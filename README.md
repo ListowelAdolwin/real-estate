@@ -15,7 +15,7 @@ Welcome to our Real Estate Marketplace GitHub repository! Here you'll find every
 
 Real Estate Marketplace is an innovative platform designed to simplify the process of finding, listing, and connecting with properties for sale or rent. Whether you're a homeowner looking to sell your property or a tenant searching for your next home, this platform provides a seamless experience to meet your needs.
 
-## Features
+## Key Features
 
 - **User Registration and Authentication**: Users can create accounts securely and log in to access the platform's features.
 
@@ -34,7 +34,7 @@ Real Estate Marketplace was built with these cutting-edge technologies to delive
 - **Frontend**: ReactJS, Redux, Tailwindcss
 
 - **Backend**: Nodejs, Express.js, MongoDB
-- 
+
 ## Getting Started
 
 To get started with our project, follow these steps:
