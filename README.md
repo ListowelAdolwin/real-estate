@@ -1,3 +1,4 @@
+[![Screenshot from app](https://github.com/ListowelAdolwin/real-estate/blob/main/client/src/assets/screenshots/filter.png)](https://dream-home-finder.onrender.com/)
 # Dream Home Finder 🏡
 
 Here you'll find everything you need to know about this project. Whether you're a developer interested in contributing, a potential user looking for your dream home, or just curious about what we've built, you're in the right place.
