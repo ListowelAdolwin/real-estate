@@ -9,12 +9,15 @@ function GoogleOauth() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleOAuth = async () => {
     try {
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
       const result = await signInWithPopup(auth, provider);
-      const res = await fetch("/api/auth/google", {
+      //const res = await fetch("/api/auth/google", {
+      const res = await fetch(`${API_URL}/api/auth/google`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,7 +30,7 @@ function GoogleOauth() {
       });
       if (res.ok) {
         const data = await res.json();
-        dispatch(registerSuccess({ data }));
+        dispatch(registerSuccess({ ...data }));
         console.log(data);
         navigate("/");
       } else {

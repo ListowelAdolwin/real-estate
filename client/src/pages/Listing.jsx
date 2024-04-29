@@ -29,12 +29,12 @@ function Listing() {
   SwiperCore.use([Navigation]);
   const listingId = params.listingId;
   const { currentUser } = useSelector((state) => state.user);
-  console.log(currentUser)
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const getListing = async () => {
       try {
-        const res = await fetch(`/api/listings/${listingId}`);
+        const res = await fetch(`${API_URL}/api/listings/${listingId}`);
         const data = await res.json();
         if (res.ok) {
           setListing(data);
@@ -146,17 +146,15 @@ function Listing() {
                 {listing.furnished ? "Furnished" : "Unfurnished"}
               </li>
             </ul>
-            {currentUser &&
-              listing.author !== currentUser.data._id &&
-              !contact && (
-                <button
-                  onClick={() => setContact(true)}
-                  className="bg-slate-700 text-white rounded-lg hover:opacity-95 p-3"
-                >
-                  Contact landlord
-                </button>
-              )}
-            {currentUser && listing.author === currentUser.data._id && (
+            {currentUser && listing.author !== currentUser._id && !contact && (
+              <button
+                onClick={() => setContact(true)}
+                className="bg-slate-700 text-white rounded-lg hover:opacity-95 p-3"
+              >
+                Contact landlord
+              </button>
+            )}
+            {currentUser && listing.author === currentUser._id && (
               <div className="flex gap-4 mt-6">
                 <Link
                   to={`/listing/edit/${listing._id}`}

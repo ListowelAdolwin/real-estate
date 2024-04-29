@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    currentUser: null,
+    currentUser: {},
+    accessToken: null,
     errors: null,
     isLoading: false
 }
@@ -14,7 +15,9 @@ const userSlice = createSlice({
             state.isLoading = true
         },
         registerSuccess: (state, action) => {
-            state.currentUser = action.payload,
+            console.log('Data from google: ', action.payload)
+            state.currentUser = action.payload.user,
+            state.accessToken = action.payload.accessToken,
             state.isLoading = false
         },
         registerFailure: (state, action) => {
@@ -29,6 +32,7 @@ const userSlice = createSlice({
         },
         logoutUser: (state, action) => {
             state.currentUser = null
+            state.accessToken = null
         }
     }
 })

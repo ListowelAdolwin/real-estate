@@ -13,24 +13,25 @@ import { useNavigate, useParams } from "react-router-dom";
 
 function EditListing() {
   const navigate = useNavigate();
-  const params = useParams()
+  const params = useParams();
   const listingId = params.listingId;
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, accessToken } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
   const [uploadError, setUploadError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
-  const [listing, setListing] = useState([])
-  console.log(formData);
+  const [listing, setListing] = useState([]);
+
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const getListing = async () => {
-        const res = await fetch(`/api/listings/${listingId}`);
-        const data = await res.json()
-        setFormData(data)
-    }
-    getListing()
-  }, [])
+      const res = await fetch(`${API_URL}/api/listings/${listingId}`);
+      const data = await res.json();
+      setFormData(data);
+    };
+    getListing();
+  }, []);
 
   const handleFileChange = (e) => {
     setUploadError("");
@@ -152,12 +153,13 @@ function EditListing() {
       setUploadError("Discounted price cannot be greater than regular price!");
       return;
     }
-    const res = await fetch(`/api/listings/update/${listingId}`, {
+    const res = await fetch(`${API_URL}/api/listings/update/${listingId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ ...formData, author: currentUser.data._id }),
+      body: JSON.stringify({ ...formData, author: currentUser._id }),
     });
     const data = await res.json();
     console.log("Res: ", res);

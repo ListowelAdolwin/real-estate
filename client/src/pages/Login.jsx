@@ -13,9 +13,10 @@ function Login() {
   const [userData, setUserData] = useState({});
 
   const dispatch = useDispatch();
-  const { isLoading, errors } = useSelector((state) => state.user);
+  const { isLoading, accessToken, currentUser } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) => {
     dispatch(registerFailure());
@@ -28,7 +29,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(registerStart());
-    const res = await fetch("/api/auth/login", {
+    const res = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,10 +37,11 @@ function Login() {
       body: JSON.stringify(userData),
     });
     const data = await res.json();
-    console.log(data);
+    console.log("Res: ", data)
     if (res.ok) {
+      dispatch(registerSuccess({ user: data.user, accessToken: data.accessToken }));
       navigate("/");
-      dispatch(registerSuccess({ data }));
+      
     } else {
       dispatch(registerFailure(data.message));
     }

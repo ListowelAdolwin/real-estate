@@ -18,7 +18,8 @@ export default function Search() {
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
   const [showMore, setShowMore] = useState(false);
-  console.log("Listing: ", listings)
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
@@ -53,7 +54,7 @@ export default function Search() {
       setLoading(true);
       setShowMore(false);
       const searchQuery = urlParams.toString();
-      const res = await fetch(`/api/listings?${searchQuery}`);
+      const res = await fetch(`${API_URL}/api/listings?${searchQuery}`);
       const data = await res.json();
       if (data.length > 8) {
         setShowMore(true);
@@ -121,7 +122,7 @@ export default function Search() {
     const urlParams = new URLSearchParams(location.search);
     urlParams.set("startIndex", startIndex);
     const searchQuery = urlParams.toString();
-    const res = await fetch(`/api/listings/?${searchQuery}`);
+    const res = await fetch(`${API_URL}/api/listings/?${searchQuery}`);
     const data = await res.json();
     if (data.length < 9) {
       setShowMore(false);

@@ -1,22 +1,29 @@
 import React from "react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function DeleteModal(props) {
   const [showModal, setShowModal] = useState(false);
 
-  const navigate = useNavigate()
+  const { accessToken } = useSelector((state) => state.user);
+  const API_URL = import.meta.env.VITE_API_URL
+
+  const navigate = useNavigate();
   const handleDelete = async (type) => {
     if (type == "listing") {
       // handle listing delete
       try {
-        const res = await fetch(`/api/listings/delete/${props.listingId}`, {
+        const res = await fetch(`${API_URL}/api/listings/delete/${props.listingId}`, {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         });
         const data = await res.json();
         if (res.ok) {
           console.log(data);
-          navigate("/profile")
+          navigate("/profile");
         }
       } catch (error) {
         console.log("Error: ", error);

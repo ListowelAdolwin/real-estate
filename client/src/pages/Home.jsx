@@ -4,18 +4,20 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import SwiperCore from "swiper";
 import "swiper/css/bundle";
-import Listing from "../components/Listing"
+import Listing from "../components/Listing";
 
 export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
+
   SwiperCore.use([Navigation]);
-  console.log(offerListings);
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
-        const res = await fetch("/api/listings?offer=true&limit=4");
+        const res = await fetch(`${API_URL}/api/listings?offer=true&limit=4`);
         const data = await res.json();
         setOfferListings(data);
         fetchRentListings();
@@ -25,7 +27,7 @@ export default function Home() {
     };
     const fetchRentListings = async () => {
       try {
-        const res = await fetch("/api/listings?type=rent&limit=4");
+        const res = await fetch(`${API_URL}/api/listings?type=rent&limit=4`);
         const data = await res.json();
         setRentListings(data);
         fetchSaleListings();
@@ -36,7 +38,7 @@ export default function Home() {
 
     const fetchSaleListings = async () => {
       try {
-        const res = await fetch("/api/listings?type=sale&limit=4");
+        const res = await fetch(`${API_URL}/api/listings?type=sale&limit=4`);
         const data = await res.json();
         setSaleListings(data);
       } catch (error) {
@@ -73,14 +75,13 @@ export default function Home() {
         {offerListings &&
           offerListings.length > 0 &&
           offerListings.map((listing) => (
-            <SwiperSlide>
+            <SwiperSlide key={listing._id}>
               <div
                 style={{
-                  background: `url(${listing.imageUrls[0]}) center repeat`,
-                  backgroundSize: "contain",
+                  background: `url(${listing.imageUrls[0]}) center`,
+                  backgroundSize: "cover",
                 }}
                 className="h-[500px]"
-                key={listing._id}
               ></div>
             </SwiperSlide>
           ))}

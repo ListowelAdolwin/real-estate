@@ -16,6 +16,7 @@ function Register() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) => {
     dispatch(registerFailure());
@@ -28,7 +29,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(registerStart());
-    const res = await fetch("/api/auth/register", {
+    const res = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

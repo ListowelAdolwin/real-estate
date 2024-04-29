@@ -7,7 +7,8 @@ export default function Contact({ listing }) {
   const [landlord, setLandlord] = useState(null);
   const [message, setMessage] = useState("");
 
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser,accessToken } = useSelector((state) => state.user);
+  const API_URL = import.meta.env.VITE_API_URL
   const onChange = (e) => {
     setMessage(e.target.value);
   };
@@ -15,7 +16,7 @@ export default function Contact({ listing }) {
   useEffect(() => {
     const fetchLandlord = async () => {
       try {
-        const res = await fetch(`/api/user/${listing.author}`);
+        const res = await fetch(`${API_URL}/api/user/${listing.author}`);
         const data = await res.json();
         setLandlord(data);
       } catch (error) {
@@ -26,24 +27,25 @@ export default function Contact({ listing }) {
   }, [listing.author]);
 
   const sendMessage = async () => {
-    const res = await fetch("/api/user/send-email", {
+    const res = await fetch(`${API_URL}/api/user/send-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
-        sender: currentUser.data.email,
+        sender: currentUser.email,
         receiver: landlord.email,
         subject: `Interested in talking about your Listing, ${listing.name}`,
         message,
       }),
     });
     const data = await res.json();
-    if (res.ok){
-    setMessage("");
-    toast("Email successfully sent!");
+    if (res.ok) {
+      setMessage("");
+      toast("Email successfully sent!");
     } else {
-      toast("Error while sending email, please retry")
+      toast("Error while sending email, please retry");
     }
     console.log(data);
   };

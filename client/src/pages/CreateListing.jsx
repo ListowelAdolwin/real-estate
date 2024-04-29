@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 function CreateListing() {
   const navigate = useNavigate();
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, accessToken } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -31,7 +31,8 @@ function CreateListing() {
   const [uploadError, setUploadError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
-  console.log(formData);
+
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleFileChange = (e) => {
     setUploadError("");
@@ -160,12 +161,13 @@ function CreateListing() {
       setUploadError("Discounted price cannot be greater than regular price!");
       return;
     }
-    const res = await fetch("/api/listings/create", {
+    const res = await fetch(`${API_URL}/api/listings/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ ...formData, author: currentUser.data._id }),
+      body: JSON.stringify({ ...formData, author: currentUser._id }),
     });
     const data = await res.json();
     console.log("Res: ", res);
@@ -277,7 +279,6 @@ function CreateListing() {
                 name="bedrooms"
                 id="bedrooms"
                 className="w-16 p-2 border border-gray-300 rounded-lg"
-                defaultValue="1"
                 required
                 onChange={handleFormChange}
                 value={formData.bedrooms}
@@ -292,7 +293,6 @@ function CreateListing() {
                 name="bathrooms"
                 id="bathrooms"
                 className="w-16 p-2 border border-gray-300 rounded-lg"
-                defaultValue="1"
                 required
                 onChange={handleFormChange}
                 value={formData.bathrooms}
@@ -306,7 +306,6 @@ function CreateListing() {
                 min="0"
                 id="regularPrice"
                 className="w-16 p-2 border border-gray-300 rounded-lg"
-                defaultValue="0"
                 required
                 onChange={handleFormChange}
                 value={formData.regularPrice}
@@ -326,7 +325,6 @@ function CreateListing() {
                   name="discountedPrice"
                   id="discountedPrice"
                   className="w-16 p-2 border border-gray-300 rounded-lg"
-                  defaultValue="0"
                   required
                   onChange={handleFormChange}
                   value={formData.discountedPrice}

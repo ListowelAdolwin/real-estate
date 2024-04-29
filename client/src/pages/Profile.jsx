@@ -23,16 +23,19 @@ function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, accessToken } = useSelector((state) => state.user);
+  console.log("currentUser: ", currentUser);
   const [avatar, setAvatar] = useState(undefined);
   const [userData, setUserData] = useState({
-    username: currentUser.data.username,
-    email: currentUser.data.email,
+    username: currentUser.username,
+    email: currentUser.email,
   });
   const [avatarUploadError, setAvatarUploadError] = useState(false);
   const [avatarUploadPercent, setAvatarUploadPercent] = useState(0);
   const [showModal, setShowModal] = React.useState(false);
   const [userListings, setUserListings] = useState([]);
+
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     getUserListings();
@@ -45,6 +48,7 @@ function Profile() {
   }, [avatar]);
 
   const avatarRef = useRef(null);
+
   const handleFileUpload = (avatar) => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + "__" + avatar.name;
@@ -59,6 +63,7 @@ function Profile() {
         setAvatarUploadPercent(Math.round(progress));
       },
       (error) => {
+        console.log("Error in firebase: ", error);
         setAvatarUploadError(true);
       },
       () => {
@@ -78,18 +83,21 @@ function Profile() {
   };
 
   const handleUpdate = async (e) => {
+    console.log(currentUser);
     e.preventDefault();
-    const res = await fetch(`/api/user/update/${currentUser.data._id}`, {
+    const res = await fetch(`${API_URL}/api/user/update/${currentUser._id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(userData),
     });
     const data = await res.json();
+    console.log("Updated: ", data)
     if (res.ok) {
-      dispatch(updateUser({ data }));
-      toast("Profile successfully updated!")
+      dispatch(updateUser({ ...data }));
+      toast("Profile successfully updated!");
     } else {
       console.log("Error occured in updating profile");
       console.log("Data: ", data);
@@ -99,8 +107,11 @@ function Profile() {
   const handleDelete = async (e) => {
     e.preventDefault();
     setShowModal(false);
-    const res = await fetch(`/api/user/delete/${currentUser.data._id}`, {
+    const res = await fetch(`${API_URL}/api/user/delete/${currentUser._id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
     const data = await res.json();
     console.log(data);
@@ -116,7 +127,11 @@ function Profile() {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      await fetch("/api/auth/logout");
+      await fetch("${API_URL}/api/auth/logout", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       dispatch(logoutUser());
       navigate("/");
     } catch (err) {
@@ -126,7 +141,16 @@ function Profile() {
 
   const getUserListings = async () => {
     try {
-      const res = await fetch(`/api/listings/user/${currentUser.data._id}`);
+      const res = await fetch(
+        `${API_URL}/api/listings/user/${currentUser._id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       if (!res.ok) {
         throw new Error("Failed to fetch user listings");
       }
@@ -156,15 +180,15 @@ function Profile() {
         <div className="mx-auto w-32 h-32 relative border-4 border-white rounded-full overflow-hidden">
           <img
             className="object-cover object-center h-32 cursor-pointer"
-            src={userData.avatar || currentUser.data.avatar}
-            alt="Woman looking front"
+            src={userData.avatar || currentUser.avatar}
+            alt="Profile picture"
             onClick={() => avatarRef.current.click()}
           />
         </div>
         <p className="text-sm text-center">
           {avatarUploadError ? (
             <span className="text-red-700">
-              Error Image upload (image must be less than 2 mb)
+              Error Image upload (image must be less than 10 mb)
             </span>
           ) : avatarUploadPercent > 0 && avatarUploadPercent < 100 ? (
             <span className="text-slate-700">{`Uploading ${avatarUploadPercent}%`}</span>
@@ -185,7 +209,7 @@ function Profile() {
                 id="username"
                 name="username"
                 className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                defaultValue={currentUser.data.username}
+                defaultValue={currentUser.username}
                 placeholder="Enter new username"
                 required
                 onChange={handleChange}
@@ -197,7 +221,7 @@ function Profile() {
                 id="email"
                 name="email"
                 className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                defaultValue={currentUser.data.email}
+                defaultValue={currentUser.email}
                 placeholder="Enter new email"
                 required
                 onChange={handleChange}
@@ -295,7 +319,7 @@ function Profile() {
       </div>
       <div className="md:flex-grow md:w-6/12 md:h-screen md:overflow-y-auto">
         <h2 className="text-2xl text-center mb-4 font-bold text-gray-600">
-          Listings created by {currentUser.data.username}
+          Listings created by {currentUser.username}
         </h2>
         <div className="relative flex mn-h-screen flex-col justify-center overflow-hidden sm:py-4">
           <div className="mx-auto max-w-screen-xl px-4 w-full">
