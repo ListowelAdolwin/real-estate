@@ -1,6 +1,6 @@
-# Welcome to our Real Estate Marketplace 🏡
+# Dream Home Finder 🏡
 
-Welcome to our Real Estate Marketplace GitHub repository! Here you'll find everything you need to know about our project. Whether you're a developer interested in contributing, a potential user looking for your dream home, or just curious about what we've built, you're in the right place.
+Here you'll find everything you need to know about this project. Whether you're a developer interested in contributing, a potential user looking for your dream home, or just curious about what we've built, you're in the right place.
 
 ## Table of Contents
 
@@ -13,7 +13,7 @@ Welcome to our Real Estate Marketplace GitHub repository! Here you'll find every
 
 ## Introduction
 
-Real Estate Marketplace is an innovative platform designed to simplify the process of finding, listing, and connecting with properties for sale or rent. Whether you're a homeowner looking to sell your property or a tenant searching for your next home, this platform provides a seamless experience to meet your needs.
+Dream Home Finder is an innovative platform designed to simplify the process of finding, listing, and connecting with properties for sale or rent. Whether you're a homeowner looking to sell your property or a tenant searching for your next home, this platform provides a seamless experience to meet your needs.
 
 ## Key Features
 
@@ -29,11 +29,11 @@ Real Estate Marketplace is an innovative platform designed to simplify the proce
 
 ## Technologies Used
 
-Real Estate Marketplace was built with these cutting-edge technologies to deliver an efficient user experience:
+The platform was built with these technologies to deliver an efficient user experience:
 
 - **Frontend**: ReactJS, Redux, Tailwindcss
 
-- **Backend**: Nodejs, Express.js, MongoDB
+- **Backend**: Nodejs, Express.js, MongoDB, JWT
 
 ## Getting Started
 
