@@ -35,7 +35,7 @@ exports.Login = async (req, res, next) => {
     const {password:pass, ...rest} = validUser._doc
     const expirationDate = new Date();
     expirationDate.setDate(new Date().getDate() + 1);
-    res.cookie('accessToken', token, {httpOnly: true, expires: expirationDate}).status(200).json(rest)
+    res.cookie('accessToken', token, {httpOnly: true}).status(200).json({user: rest, accessToken: token})
     } catch (error) {
         next(error)
     }
@@ -58,7 +58,7 @@ exports.googleAuth = async (req, res, next) => {
         if (foundUser){
             const token = jwt.sign({id: foundUser._id}, process.env.JWT_SECRET_KEY, {expiresIn: '1d'})
             const {password:pass, ...rest} = foundUser._doc
-            res.cookie('accessToken', token, {httpOnly: true}).status(200).json(rest)
+            res.cookie('accessToken', token, {httpOnly: true, secure: true}).status(200).json({user: rest, accessToken: token})
         }else{
             const unhashedPassword = generator.generate({
                 length: 16,
@@ -71,7 +71,7 @@ exports.googleAuth = async (req, res, next) => {
             await newUser.save()
             const token = jwt.sign({id: newUser._id}, process.env.JWT_SECRET_KEY, {expiresIn: '1d'})
             const {password:pass, ...rest} = newUser._doc
-            res.cookie('accessToken', token, {httpOnly: true}).status(200).json(rest)
+            res.cookie('accessToken', token, {httpOnly: true}).status(200).json({user: rest, accessToken: token})
         }
     } catch (error) {
         next(error)
