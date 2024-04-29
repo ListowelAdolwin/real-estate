@@ -2,8 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 require('dotenv').config()
 const cookieParser = require('cookie-parser')
-const path = require('path');
-
+const cors = require('cors')
 const connectDB = require('./config/db')
 
 const userRoutes = require("./routes/userRoutes")
@@ -12,9 +11,25 @@ const listingRouter = require("./routes/listingRoutes")
 
 connectDB()
 
-const listo_dirname = path.resolve();
-
 const app = express()
+
+app.use(
+	  cors({
+		origin: [
+		  'https://dream-home.onrender.com',
+		  'http://127.0.0.1:5173/',
+		  'https://127.0.0.1:5173/',
+		  'http://127.0.0.1:5173',
+		  'https://dream-home.onrender.com',
+		  'https://dream-home.onrender.com/',
+		  'http://dream-home.onrender.com',
+		  'http://dream-home.onrender.com/'
+		],
+		methods: ['GET', 'POST', 'PUT', 'DELETE'],
+		credentials: true
+	  })
+	)
+
 app.use(express.json())
 app.use(cookieParser())
 
@@ -28,12 +43,6 @@ mongoose.connection.once('open', () => {
     app.listen(3000, () => {
     console.log("App started")
 })
-})
-
-app.use(express.static(path.join(listo_dirname, '/client/dist')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(listo_dirname, 'client', 'dist', 'index.html'));
 })
 
 // Used to send error messages to the client side. 
