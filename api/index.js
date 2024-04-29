@@ -16,14 +16,13 @@ const app = express()
 app.use(
 	  cors({
 		origin: [
-		  'https://dream-home.onrender.com',
 		  'http://127.0.0.1:5173/',
 		  'https://127.0.0.1:5173/',
 		  'http://127.0.0.1:5173',
-		  'https://dream-home.onrender.com',
-		  'https://dream-home.onrender.com/',
-		  'http://dream-home.onrender.com',
-		  'http://dream-home.onrender.com/'
+		  'https://dream-home-finder.onrender.com',
+		  'https://dream-home-finder.onrender.com/',
+		  'http://dream-home-finder.onrender.com',
+		  'http://dream-home-finder.onrender.com/'
 		],
 		methods: ['GET', 'POST', 'PUT', 'DELETE'],
 		credentials: true
