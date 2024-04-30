@@ -12,7 +12,6 @@ Visit below to experience it! <br/>
 - [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
 - [Contributing](#contributing)
-- [Screenshots](#screenshots)
 
 ## Introduction
 
