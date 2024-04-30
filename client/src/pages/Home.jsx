@@ -5,6 +5,8 @@ import { Navigation } from "swiper/modules";
 import SwiperCore from "swiper";
 import "swiper/css/bundle";
 import Listing from "../components/Listing";
+import backgroundImageMobile from "../assets/bg10.jpg";
+import backgroundImage from "../assets/bg7.avif";
 
 export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
@@ -49,29 +51,76 @@ export default function Home() {
   }, []);
   return (
     <div>
-      {/* top */}
-      <div className="flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto">
-        <h1 className="text-slate-700 font-bold text-3xl lg:text-6xl">
-          Find your next <span className="text-slate-500">perfect</span>
-          <br />
-          place with ease
-        </h1>
-        <div className="text-gray-400 text-xs sm:text-sm">
-          Sahand Estate is the best place to find your next perfect place to
-          live.
-          <br />
-          We have a wide range of properties for you to choose from.
+      <div
+        className="w-full h-screen mx-auto hidden md:block"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          opacity: "100%",
+        }}
+      >
+        {/* top */}
+        <div className="p-5 sm:p-16 max-w-2xl">
+          <div className="bg-slate-700  bg-opacity-60 p-5 flex flex-col gap-5">
+            <h1 className="text-white font-bold text-3xl lg:text-6xl">
+              Find your next <span className="">perfect</span>
+              <br />
+              place with ease
+            </h1>
+            <div className="text-sky-300 text-sm">
+              Dream Home Finder is the best place to find your next perfect
+              place to live. We have a wide range of properties for you to
+              choose from.
+            </div>
+            <Link
+              to="/search"
+              className="w-60 bg-cyan-950 text-cyan-400 border border-cyan-400 border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group"
+            >
+              <span className="bg-cyan-400 shadow-cyan-400 absolute -top-[150%] left-0 rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+              Lets' Get Started
+            </Link>
+          </div>
         </div>
-        <Link
-          to={"/search"}
-          className="text-xs sm:text-sm text-blue-800 font-bold hover:underline"
-        >
-          Let's get started...
-        </Link>
       </div>
-
+      <div
+        className="w-full h-screen mx-auto md:hidden"
+        style={{
+          backgroundImage: `url(${backgroundImageMobile})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          opacity: "100%",
+        }}
+      >
+        {/* top */}
+        <div className="p-5 sm:p-12 max-w-2xl">
+          <div className="bg-slate-700  bg-opacity-60 p-5 flex flex-col gap-5">
+            <h1 className="text-white font-bold text-3xl lg:text-6xl">
+              Find your next <span className="">perfect</span>
+              <br />
+              place with ease
+            </h1>
+            <div className="text-sky-300 text-sm">
+              Dream Home Finder is the best place to find your next perfect
+              place to live. We have a wide range of properties for you to
+              choose from.
+            </div>
+            <Link
+              to="/search"
+              className="w-60 bg-cyan-950 text-cyan-400 border border-cyan-400 border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group"
+            >
+              <span className="bg-cyan-400 shadow-cyan-400 absolute -top-[150%] left-0 rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+              Lets' Get Started
+            </Link>
+          </div>
+        </div>
+      </div>
       {/* swiper */}
-      <Swiper navigation>
+      {/* <Swiper navigation>
         {offerListings &&
           offerListings.length > 0 &&
           offerListings.map((listing) => (
@@ -85,10 +134,8 @@ export default function Home() {
               ></div>
             </SwiperSlide>
           ))}
-      </Swiper>
-
+      </Swiper> */}
       {/* listing results for offer, sale and rent */}
-
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
         {offerListings && offerListings.length > 0 && (
           <div className="">

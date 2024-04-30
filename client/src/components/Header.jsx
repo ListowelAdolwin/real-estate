@@ -60,7 +60,7 @@ function Navbar() {
               type="text"
               name="q"
               id=""
-              placeholder="Search real estates"
+              placeholder="Search apartments"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
