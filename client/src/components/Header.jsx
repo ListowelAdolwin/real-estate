@@ -84,7 +84,7 @@ function Navbar() {
           </svg>
         </div>
         <div id="menu" className={`md:block ${menuOpen ? "" : "hidden"}`}>
-          <ul className="text-lg items-center w-screen md:w-auto md:flex ">
+          <ul className="text-lg mt-8 md:mt-0 items-center w-screen md:w-auto md:flex ">
             <Link onClick={toggleMenu} to="/">
               <li className="p-4 text-gray-300 border-b border-gray-600 md:border-0 ">
                 Home
@@ -111,9 +111,9 @@ function Navbar() {
             )}
             {currentUser && (
               <Link to="/profile">
-                <li>
+                <li className="p-4 text-gray-300 border-b border-gray-600 md:border-0">
                   <img
-                    className="h-8 w-8 mx-8 rounded-full object-cover"
+                    className="h-8 w-8 rounded-full object-cover"
                     src={currentUser.avatar}
                     alt="avatar"
                     onClick={toggleMenu}
