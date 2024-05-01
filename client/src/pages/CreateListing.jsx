@@ -193,7 +193,7 @@ function CreateListing() {
             id="name"
             name="name"
             maxLength="62"
-            minLength="10"
+            minLength="3"
             required
             onChange={handleFormChange}
             value={formData.name}
