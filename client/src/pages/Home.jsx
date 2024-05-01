@@ -86,7 +86,7 @@ export default function Home() {
         </div>
       </div>
       <div
-        className="w-full h-screen mx-auto md:hidden"
+        className="w-full mx-auto md:hidden"
         style={{
           backgroundImage: `url(${backgroundImageMobile})`,
           backgroundSize: "cover",
