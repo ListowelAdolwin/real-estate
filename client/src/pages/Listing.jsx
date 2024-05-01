@@ -69,7 +69,7 @@ function Listing() {
         </div>
       ) : (
         <div>
-          <div className="flex flex-wrap items-center">
+          <div className="flex flex-wrap lg:flex-nowrap items-center">
             <img
               className="md:w-full lg:h-screen bg-cover lg:basis-8/12 sm:p-5"
               src={listing.imageUrls[0]}
@@ -175,17 +175,17 @@ function Listing() {
               </div>
             </div>
           </div>
-          <div className="w-full md:w-10/12 mx-auto">
+          <div className="w-full md:w-8/12 mx-auto">
             <h1 className="text-center text-3xl my-3">Gallery</h1>
             <div className="swiper-container">
               <Swiper navigation={true}>
                 {listing &&
-                  listing.imageUrls.map((url, index) => (
-                    <SwiperSlide key={index}>
+                  listing.imageUrls.map((url) => (
+                    <SwiperSlide key={url}>
                       <img
                         className="w-full h-min"
                         src={url}
-                        alt={`Image ${index}`}
+                        alt={`Listing image ${url}`}
                       />
                     </SwiperSlide>
                   ))}
